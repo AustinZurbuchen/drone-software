@@ -251,13 +251,13 @@ void loop() {
 //            Serial.print("\troll\t");
 //            Serial.println(roll);
 
-            if (pitch >= 0 && pitch >= roll) {
+            if (pitch >= 10 && abs(pitch) >= abs(roll)) {
               Serial.println("Pitching up!!");
-            } else if (pitch <= 0 && pitch <= roll) {
+            } else if (pitch <= -10 && abs(pitch) >= abs(roll)) {
               Serial.println("Pitching Down!!");
-            } else if (roll >= 0 && roll >= pitch) {
+            } else if (roll >= 10 && abs(roll) >= abs(pitch)) {
               Serial.println("Rolling Right!!");
-            } else if (roll <= 0 && roll <= pitch) {
+            } else if (roll <= -10 && abs(roll) >= abs(pitch)) {
               Serial.println("Rolling Left!!");
             } else {
               Serial.println("Maybe Level!!");
