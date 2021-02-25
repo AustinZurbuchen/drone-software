@@ -241,12 +241,27 @@ void loop() {
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-            Serial.print("ypr\t");
-            Serial.print(ypr[0] * 180/M_PI);
-            Serial.print("\t");
-            Serial.print(ypr[1] * 180/M_PI);
-            Serial.print("\t");
-            Serial.println(ypr[2] * 180/M_PI);
+            float yaw = ypr[0] * 180/M_PI;
+            float pitch = ypr[1] * 180/M_PI;
+            float roll = ypr[2] * 180/M_PI;
+//            Serial.print("yaw\t");
+//            Serial.print(yaw);
+//            Serial.print("\tpitch\t");
+//            Serial.print(pitch);
+//            Serial.print("\troll\t");
+//            Serial.println(roll);
+
+            if (pitch >= 0 && pitch >= roll) {
+              Serial.println("Pitching up!!");
+            } else if (pitch <= 0 && pitch <= roll) {
+              Serial.println("Pitching Down!!");
+            } else if (roll >= 0 && roll >= pitch) {
+              Serial.println("Rolling Right!!");
+            } else if (roll <= 0 && roll <= pitch) {
+              Serial.println("Rolling Left!!");
+            } else {
+              Serial.println("Maybe Level!!");
+            }
         #endif
 
         #ifdef OUTPUT_READABLE_REALACCEL
