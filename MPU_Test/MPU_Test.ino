@@ -78,7 +78,11 @@ float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gra
 // packet structure for InvenSense teapot demo
 uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 
-
+// DECLARE LED PINS
+int frontRight = 6;
+int backRight = 7;
+int backLeft = 8;
+int frontLeft = 9;
 
 // INTERRUPT DETECTION ROUTINE
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
@@ -163,6 +167,10 @@ void setup() {
 
     // configure LED for output
     pinMode(LED_PIN, OUTPUT);
+    pinMode(frontRight, OUTPUT);
+    pinMode(backRight, OUTPUT);
+    pinMode(backLeft, OUTPUT);
+    pinMode(frontLeft, OUTPUT);
 }
 
 
@@ -252,14 +260,19 @@ void loop() {
 //            Serial.println(roll);
 
             if (pitch >= 10 && abs(pitch) >= abs(roll)) {
+              pitchingUp();
               Serial.println("Pitching up!!");
             } else if (pitch <= -10 && abs(pitch) >= abs(roll)) {
+              pitchingDown();
               Serial.println("Pitching Down!!");
             } else if (roll >= 10 && abs(roll) >= abs(pitch)) {
+              rollingRight();
               Serial.println("Rolling Right!!");
             } else if (roll <= -10 && abs(roll) >= abs(pitch)) {
+              rollingLeft();
               Serial.println("Rolling Left!!");
             } else {
+              level();
               Serial.println("Maybe Level!!");
             }
         #endif
@@ -312,4 +325,39 @@ void loop() {
         blinkState = !blinkState;
         digitalWrite(LED_PIN, blinkState);
     }
+}
+
+void pitchingUp() {
+  digitalWrite(backRight, HIGH);
+  digitalWrite(backLeft, HIGH);
+  digitalWrite(frontRight, LOW);
+  digitalWrite(frontLeft, LOW);
+}
+
+void pitchingDown() {
+  digitalWrite(frontRight, HIGH);
+  digitalWrite(frontLeft, HIGH);
+  digitalWrite(backRight, LOW);
+  digitalWrite(backLeft, LOW);
+}
+
+void rollingRight() {
+  digitalWrite(frontRight, HIGH);
+  digitalWrite(backRight, HIGH);
+  digitalWrite(frontLeft, LOW);
+  digitalWrite(backLeft, LOW);
+}
+
+void rollingLeft() {
+  digitalWrite(frontLeft, HIGH);
+  digitalWrite(backLeft, HIGH);
+  digitalWrite(frontRight, LOW);
+  digitalWrite(backRight, LOW);
+}
+
+void level() {
+  digitalWrite(frontRight, LOW);
+  digitalWrite(frontLeft, LOW);
+  digitalWrite(backRight, LOW);
+  digitalWrite(backLeft, LOW);
 }
