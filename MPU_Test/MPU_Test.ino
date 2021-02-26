@@ -252,29 +252,29 @@ void loop() {
             float yaw = ypr[0] * 180/M_PI;
             float pitch = ypr[1] * 180/M_PI;
             float roll = ypr[2] * 180/M_PI;
-//            Serial.print("yaw\t");
-//            Serial.print(yaw);
-//            Serial.print("\tpitch\t");
-//            Serial.print(pitch);
-//            Serial.print("\troll\t");
-//            Serial.println(roll);
 
             if (pitch >= 10 && abs(pitch) >= abs(roll)) {
               pitchingUp();
-              Serial.println("Pitching up!!");
+              Serial.print("Pitching up\t");
             } else if (pitch <= -10 && abs(pitch) >= abs(roll)) {
               pitchingDown();
-              Serial.println("Pitching Down!!");
+              Serial.print("Pitching Down!!\t");
             } else if (roll >= 10 && abs(roll) >= abs(pitch)) {
               rollingRight();
-              Serial.println("Rolling Right!!");
+              Serial.print("Rolling Right!!\t");
             } else if (roll <= -10 && abs(roll) >= abs(pitch)) {
               rollingLeft();
-              Serial.println("Rolling Left!!");
+              Serial.print("Rolling Left!!\t");
             } else {
               level();
-              Serial.println("Maybe Level!!");
+              Serial.print("Maybe Level!!\t");
             }
+            Serial.print("yaw\t");
+            Serial.print(yaw);
+            Serial.print("\tpitch\t");
+            Serial.print(pitch);
+            Serial.print("\troll\t");
+            Serial.println(roll);
         #endif
 
         #ifdef OUTPUT_READABLE_REALACCEL
