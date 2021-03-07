@@ -27,15 +27,20 @@ VectorInt16 aaWorld;
 VectorFloat gravity;
 float eular[3];
 float ypr[3];
+float pOffset = -9.40;
 
 // packet structure for InvenSense teapot demo
 uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 
-// DECLARE LED PINS
-int frontRight = 6;
-int backRight = 7;
-int backLeft = 8;
-int frontLeft = 9;
+// DECLARE ARDUINO PINS
+int frontRight = 3;
+int backRight = 4;
+int backLeft = 5;
+int frontLeft = 6;
+int flMotorPin = 11;
+int frMotorPin = 10;
+int blMotorPin = 9;
+int brMotorPin = 8;
 
 // INTERRUPT DETECTION ROUTINE
 volatile bool mpuInterrupt = false;
@@ -67,10 +72,10 @@ void setup() {
   Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
 
   // wait for ready
-  Serial.println(F("\nSend any character to begin DMP programming and demo: "));
-  while (Serial.available() && Serial.read());  // empty buffer
-  while (!Serial.available());                  // wait for data
-  while (Serial.available() && Serial.read());  // empty buffer again
+//  Serial.println(F("\nSend any character to begin DMP programming and demo: "));
+//  while (Serial.available() && Serial.read());  // empty buffer
+//  while (!Serial.available());                  // wait for data
+//  while (Serial.available() && Serial.read());  // empty buffer again  
 
   // load and configure the DMP
   Serial.println(F("Intializing DMP..."));
@@ -114,6 +119,11 @@ void setup() {
   pinMode(frontLeft, OUTPUT);
   pinMode(backRight, OUTPUT);
   pinMode(backLeft, OUTPUT);
+
+  pinMode(flMotorPin, OUTPUT);
+  pinMode(frMotorPin, OUTPUT);
+  pinMode(blMotorPin, OUTPUT);
+  pinMode(brMotorPin, OUTPUT);
 }
 
 // MAIN PROGRAM LOOP
@@ -158,7 +168,7 @@ void loop() {
       mpu.dmpGetGravity(&gravity, &q);
       mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
       float yaw = ypr[0] * 180/M_PI;
-      float pitch = ypr[1] * 180/M_PI;
+      float pitch = (ypr[1] * 180/M_PI) - pOffset;
       float roll = ypr[2] * 180/M_PI;
 
       if (pitch >= 10 && abs(pitch) >= abs(roll)) {
@@ -192,6 +202,10 @@ void pitchingUp() {
   digitalWrite(backLeft, HIGH);
   digitalWrite(frontRight, LOW);
   digitalWrite(frontLeft, LOW);
+  digitalWrite(flMotorPin, LOW);
+  digitalWrite(frMotorPin, LOW);
+  digitalWrite(blMotorPin, HIGH);
+  digitalWrite(brMotorPin, HIGH);
 }
 
 void pitchingDown() {
@@ -200,6 +214,10 @@ void pitchingDown() {
   digitalWrite(frontLeft, HIGH);
   digitalWrite(backRight, LOW);
   digitalWrite(backLeft, LOW);
+  digitalWrite(flMotorPin, HIGH);
+  digitalWrite(frMotorPin, HIGH);
+  digitalWrite(blMotorPin, LOW);
+  digitalWrite(brMotorPin, LOW);
 }
 
 void rollingRight() {
@@ -208,6 +226,10 @@ void rollingRight() {
   digitalWrite(backRight, HIGH);
   digitalWrite(frontLeft, LOW);
   digitalWrite(backLeft, LOW);
+  digitalWrite(flMotorPin, LOW);
+  digitalWrite(frMotorPin, HIGH);
+  digitalWrite(blMotorPin, LOW);
+  digitalWrite(brMotorPin, HIGH);
 }
 
 void rollingLeft() {
@@ -216,6 +238,10 @@ void rollingLeft() {
   digitalWrite(backLeft, HIGH);
   digitalWrite(frontRight, LOW);
   digitalWrite(backRight,LOW);
+  digitalWrite(flMotorPin, HIGH);
+  digitalWrite(frMotorPin, LOW);
+  digitalWrite(blMotorPin, HIGH);
+  digitalWrite(brMotorPin, LOW);
 }
 
 void level() {
@@ -224,4 +250,8 @@ void level() {
   digitalWrite(backLeft, LOW);
   digitalWrite(frontRight, LOW);
   digitalWrite(backRight,LOW);
+  digitalWrite(flMotorPin, HIGH);
+  digitalWrite(frMotorPin, HIGH);
+  digitalWrite(blMotorPin, HIGH);
+  digitalWrite(brMotorPin, HIGH);
 }
